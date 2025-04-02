@@ -40,6 +40,12 @@ def violin_plots(ys:pd.DataFrame ,x, data_frame):
 
         plt.show()
 
+def correlation_heatmap(df,name):
+    sns.heatmap(df.corr(), annot=True, cmap="Greens")
+
+    plt.savefig(f"plots/heatmap/{name} correlation.png")
+    plt.show()
+
 def analysis(file_name):
     df = pd.read_csv(file_name)
 
@@ -48,13 +54,18 @@ def analysis(file_name):
     categorical = df.select_dtypes(include=object)
 
     #save the numerical and categorical summary to csv
-    summarize_numerical(numerical).to_csv("numerical_summary.csv", index=False)
-    summarize_categorical(categorical).to_csv("categorical_summary.csv", index=False)
+
+    summarize_numerical(numerical).to_csv("summaries/numerical_summary.csv", index=False)
+    summarize_categorical(categorical).to_csv("summaries/categorical_summary.csv", index=False)
 
     #save the box plots of the numerical x NObeysesdad
+
     box_plots(numerical,"NObeyesdad",df)
     violin_plots(numerical,"NObeyesdad",df)
 
+
+    #save the correlation heatmap
+    correlation_heatmap(numerical,"obesity")
 
 if __name__ == "__main__":
     analysis("data/ObesityDataSet_raw_and_data_sinthetic.csv")
