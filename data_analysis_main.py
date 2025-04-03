@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 def summarize_numerical(numerical):
     num_summary: pd.DataFrame = numerical.describe(percentiles=[0.05, 0.95]).loc[
@@ -68,6 +69,20 @@ def correlation_heatmap(df,name):
     plt.savefig(f"plots/heatmap/{name} correlation.png")
     plt.show()
 
+def reg_lines(numerical: pd.DataFrame):
+    for col in numerical:
+        for col1 in numerical:
+            if col is col1:
+                continue
+
+            if abs(numerical[col].corr(numerical[col1])) >= 0.2:
+                plt.figure(figsize=(10, 6))
+                sns.regplot(x=col, y=col1, data=numerical, line_kws={"color": "Black"})
+                plt.title(f"{col} x {col1}")
+
+                plt.savefig(f"plots/regline/{col} x {col1}.png")
+
+                plt.show()
 
 def analysis(file_name):
     df = pd.read_csv(file_name)
@@ -101,5 +116,18 @@ def analysis(file_name):
     #save the correlation heatmap
     correlation_heatmap(numerical,"obesity")
 
+    #save the regression lines for the features with correlation >= 0.2
+    reg_lines(numerical)
+
+def create_dirs():
+    directories = ["plots", "plots/boxplots", "plots/error_bars", "plots/heatmap", "plots/histograms", "plots/regline",
+                   "plots/violinplots", "summaries"]
+
+    for directory in directories:
+        path = Path(directory)
+        path.mkdir(parents=True, exist_ok=True)
+
 if __name__ == "__main__":
+
+    create_dirs()
     analysis("data/ObesityDataSet_raw_and_data_sinthetic.csv")
