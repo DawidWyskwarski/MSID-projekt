@@ -59,4 +59,4 @@ class SoftmaxRegression:
 
         pred = np.argmax(probabilities, axis=1)
 
-        return [self.labels[x] for x in pred]
+        return np.asarray([self.labels[x] for x in pred])

@@ -65,3 +65,5 @@ def evaluate(model, xTest, yTest):
 
     print(classification_report(yTest, model_y_pred))
     print(f"Accuracy: {accuracy_score(yTest, model_y_pred)}")
+
+    return model_y_pred
