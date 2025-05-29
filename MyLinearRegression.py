@@ -13,6 +13,8 @@ class MyLinearRegression:
 
         self.theta_ = pars
 
+        return self
+
     def predict(self, X):
         if self.theta_ is None:
             raise NotFittedError("Model is not fitted yet.")

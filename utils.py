@@ -5,6 +5,8 @@ from sklearn.linear_model import BayesianRidge
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
+from sklearn.metrics import accuracy_score, classification_report
+
 
 def remove_nans(df):
     df['artist_name'] = df['artist_name'].replace('empty_field', np.nan)
@@ -57,3 +59,9 @@ def music_genre_clean_up(df):
     df['tempo'] = df['tempo'].replace('?', np.nan)
     df['duration_ms'] = df['duration_ms'].replace(-1, np.nan)
     df['tempo'] = df['tempo'].apply(lambda x: float(x))
+
+def evaluate(model, xTest, yTest):
+    model_y_pred = model.predict(xTest)
+
+    print(classification_report(yTest, model_y_pred))
+    print(f"Accuracy: {accuracy_score(yTest, model_y_pred)}")
