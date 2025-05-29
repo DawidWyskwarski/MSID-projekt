@@ -45,3 +45,15 @@ def format_df(df):
     df = pd.concat([df, encoded_genres], axis=1).drop(columns=['music_genre'])
 
     return df
+
+def music_genre_clean_up(df):
+    df.drop('instance_id', inplace=True, axis=1)
+    df.drop('artist_name', inplace=True, axis=1)
+    df.drop('track_name', inplace=True, axis=1)
+    df.drop('obtained_date', inplace=True, axis=1)
+
+    df.dropna(inplace=True)
+
+    df['tempo'] = df['tempo'].replace('?', np.nan)
+    df['duration_ms'] = df['duration_ms'].replace(-1, np.nan)
+    df['tempo'] = df['tempo'].apply(lambda x: float(x))
