@@ -26,6 +26,15 @@ class SoftmaxRegression:
 
         return y_int
 
+    def predict_proba(self, X):
+        if self.weights_ is None:
+            raise NotFittedError
+
+        X_biased = np.hstack((X, np.ones((X.shape[0], 1))))
+
+        return  self.softmax(X_biased @ self.weights_)
+
+
     def fit(self, X, y):
         n_samples, n_features = X.shape
         n_classes = len(np.unique(y))
@@ -51,11 +60,7 @@ class SoftmaxRegression:
         return self
 
     def predict(self, X):
-        if self.weights_ is None:
-            raise NotFittedError
-
-        X_biased = np.hstack((X, np.ones((X.shape[0], 1))))
-        probabilities = self.softmax(X_biased @ self.weights_)
+        probabilities = self.predict_proba(X)
 
         pred = np.argmax(probabilities, axis=1)
 
