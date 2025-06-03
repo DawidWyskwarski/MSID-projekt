@@ -5,11 +5,13 @@ from sklearn.preprocessing import LabelEncoder
 
 class SoftmaxRegression:
 
-    def __init__(self, learning_rate: float = 0.01, batch_size: int = 32, epoches: int = 100):
+    def __init__(self, learning_rate: float = 0.01, batch_size: int = 32, epoches: int = 100, penalty='', alpha=0.01):
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.epoches = epoches
         self.labels = None
+        self.penalty = penalty
+        self.alpha = alpha
         ### Why does it suddenly work when I added the '_' after the name
         ### like what the hell ?!?!?
         self.weights_ = None
@@ -54,6 +56,11 @@ class SoftmaxRegression:
                 probabilities = self.softmax(logits)
 
                 gradient = X_batch.T @ (probabilities - y_batch) / X_batch.shape[0]
+
+                if self.penalty == 'l1':
+                    gradient += self.alpha * np.sign(self.weights_)
+                elif self.penalty == 'l2':
+                    gradient += 2 * self.alpha * self.weights_
 
                 self.weights_ -= self.learning_rate * gradient
 

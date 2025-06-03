@@ -2,11 +2,13 @@ import numpy as np
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.linear_model import BayesianRidge
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report
-
 
 def remove_nans(df):
     df['artist_name'] = df['artist_name'].replace('empty_field', np.nan)
@@ -60,6 +62,19 @@ def music_genre_clean_up(df):
     df['duration_ms'] = df['duration_ms'].replace(-1, np.nan)
     df['tempo'] = df['tempo'].apply(lambda x: float(x))
 
+def get_preprocessor(num, cat, seed = 42):
+    num_pl = Pipeline([
+        ('imputer', IterativeImputer(estimator=BayesianRidge(), random_state=seed)),
+        ('scaler', StandardScaler())
+    ])
+
+    preprocessor = ColumnTransformer([
+        ('num', num_pl, num),
+        ('cat', OneHotEncoder(drop='if_binary'), cat)
+    ])
+
+    return preprocessor
+
 def evaluate(model, xTest, yTest):
     model_y_pred = model.predict(xTest)
 
@@ -67,3 +82,6 @@ def evaluate(model, xTest, yTest):
     print(f"Accuracy: {accuracy_score(yTest, model_y_pred)}")
 
     return model_y_pred
+
+def divide_dataframe(dataframe, target):
+    return dataframe.drop(target, axis=1), dataframe[target]
