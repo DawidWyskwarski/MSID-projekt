@@ -84,4 +84,6 @@ def evaluate(model, xTest, yTest):
     return model_y_pred
 
 def divide_dataframe(dataframe, target):
-    return dataframe.drop(target, axis=1), dataframe[target]
+    X = dataframe.drop(target, axis=1)
+    y = dataframe[target]
+    return X, y, list(X.select_dtypes(exclude=object).columns), list(X.select_dtypes(include=object).columns)
