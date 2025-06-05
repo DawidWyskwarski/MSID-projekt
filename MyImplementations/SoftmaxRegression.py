@@ -45,7 +45,8 @@ class SoftmaxRegression:
 
         y_one_hot = np.eye(n_classes)[ self.encode_target(y) ]
 
-        self.weights_ = np.zeros((n_features + 1, n_classes))
+        if self.weights_ is None:
+            self.weights_ = np.zeros((n_features + 1, n_classes))
 
         for _ in range(self.epoches):
             for i in range(0, n_samples, self.batch_size):
